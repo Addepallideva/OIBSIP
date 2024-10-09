@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('temp bg.png'); /* Use your local image file here */
+            background-size: cover;
+            background-position: center;
+        }
+        .converter-box {
+            background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+        h1 {
+            font-size: 2em;
+            display: none; /* Initially hidden */
+        }
+        .circle {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            border-radius: 50%;
+            background-color: #444;
+            text-align: center;
+            line-height: 100px;
+            font-size: 1.5em;
+            border: 2px solid #ccc;
+            cursor: pointer;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            display: none; /* Initially hidden */
+        }
+        .output {
+            display: none; /* Initially hidden */
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="converter-box">
+        <h1 id="title" class="fade-in"></h1>
+        <select id="converter-type" onchange="toggleConverter()" class="fade-in">
+            <option value="">Select Converter Type</option>
+            <option value="celsius">Celsius</option>
+            <option value="fahrenheit">Fahrenheit</option>
+            <option value="kelvin">Kelvin</option>
+        </select>
+
+        <div class="circle" id="celsius-circle" onclick="showInput('C')">C</div>
+        <input type="number" id="celsius" placeholder="Celsius" oninput="convertToOthers('C')" style="display:none;">
+        <div class="output" id="output-celsius"></div>
+
+        <div class="circle" id="fahrenheit-circle" onclick="showInput('F')">F</div>
+        <input type="number" id="fahrenheit" placeholder="Fahrenheit" oninput="convertToOthers('F')" style="display:none;">
+        <div class="output" id="output-fahrenheit"></div>
+
+        <div class="circle" id="kelvin-circle" onclick="showInput('K')">K</div>
+        <input type="number" id="kelvin" placeholder="Kelvin" oninput="convertToOthers('K')" style="display:none;">
+        <div class="output" id="output-kelvin"></div>
+
+        <button onclick="clearFields()" class="fade-in">Clear</button>
+    </div>
+
+    <script>
+        // Function to display text one letter at a time
+        function displayText() {
+            const title = "TEMPERATURE CONVERTER 🌡️";
+            const titleElement = document.getElementById('title');
+            titleElement.style.display = 'block';
+            titleElement.innerText = ""; // Clear previous text
+
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index < title.length) {
+                    titleElement.innerText += title[index];
+                    index++;
+                } else {
+                    clearInterval(interval); // Stop when done
+                }
+            }, 100); // Adjust the speed by changing the interval
+        }
+
+        window.onload = function() {
+            displayText();
+            document.getElementById('converter-type').style.display = 'block';
+        };
+
+        function toggleConverter() {
+            const selectedType = document.getElementById('converter-type').value;
+            const celsiusCircle = document.getElementById('celsius-circle');
+            const fahrenheitCircle = document.getElementById('fahrenheit-circle');
+            const kelvinCircle = document.getElementById('kelvin-circle');
+
+            celsiusCircle.style.display = selectedType === 'celsius' ? 'inline-block' : 'none';
+            fahrenheitCircle.style.display = selectedType === 'fahrenheit' ? 'inline-block' : 'none';
+            kelvinCircle.style.display = selectedType === 'kelvin' ? 'inline-block' : 'none';
+        }
+
+        function showInput(type) {
+            const celsiusInput = document.getElementById('celsius');
+            const fahrenheitInput = document.getElementById('fahrenheit');
+            const kelvinInput = document.getElementById('kelvin');
+            const outputCelsius = document.getElementById('output-celsius');
+            const outputFahrenheit = document.getElementById('output-fahrenheit');
+            const outputKelvin = document.getElementById('output-kelvin');
+
+            // Hide all inputs and outputs first
+            celsiusInput.style.display = 'none';
+            fahrenheitInput.style.display = 'none';
+            kelvinInput.style.display = 'none';
+            outputCelsius.style.display = 'none';
+            outputFahrenheit.style.display = 'none';
+            outputKelvin.style.display = 'none';
+
+            // Show the input field for the selected type
+            if (type === 'C') {
+                celsiusInput.style.display = 'block';
+                celsiusInput.focus();
+            } else if (type === 'F') {
+                fahrenheitInput.style.display = 'block';
+                fahrenheitInput.focus();
+            } else if (type === 'K') {
+                kelvinInput.style.display = 'block';
+                kelvinInput.focus();
+            }
+
+            // Clear other inputs
+            celsiusInput.value = '';
+            fahrenheitInput.value = '';
+            kelvinInput.value = '';
+        }
+
+        function convertToOthers(type) {
+            const celsiusInput = document.getElementById('celsius');
+            const fahrenheitInput = document.getElementById('fahrenheit');
+            const kelvinInput = document.getElementById('kelvin');
+            const outputCelsius = document.getElementById('output-celsius');
+            const outputFahrenheit = document.getElementById('output-fahrenheit');
+            const outputKelvin = document.getElementById('output-kelvin');
+
+            const celsius = parseFloat(celsiusInput.value) || 0;
+            const fahrenheit = parseFloat(fahrenheitInput.value) || 0;
+            const kelvin = parseFloat(kelvinInput.value) || 0;
+
+            if (type === 'C') {
+                const convertedF = (celsius * 9/5) + 32;
+                const convertedK = celsius + 273.15;
+                fahrenheitInput.value = convertedF.toFixed(2);
+                kelvinInput.value = convertedK.toFixed(2);
+                outputFahrenheit.innerText = `Fahrenheit: ${convertedF.toFixed(2)} °F`;
+                outputKelvin.innerText = `Kelvin: ${convertedK.toFixed(2)} K`;
+            } else if (type === 'F') {
+                const convertedC = (fahrenheit - 32) * 5/9;
+                const convertedK = (fahrenheit - 32) * 5/9 + 273.15;
+                celsiusInput.value = convertedC.toFixed(2);
+                kelvinInput.value = convertedK.toFixed(2);
+                outputCelsius.innerText = `Celsius: ${convertedC.toFixed(2)} °C`;
+                outputKelvin.innerText = `Kelvin: ${convertedK.toFixed(2)} K`;
+            } else if (type === 'K') {
+                const convertedC = kelvin - 273.15;
+                const convertedF = (kelvin - 273.15) * 9/5 + 32;
+                celsiusInput.value = convertedC.toFixed(2);
+                fahrenheitInput.value = convertedF.toFixed(2);
+                outputCelsius.innerText = `Celsius: ${convertedC.toFixed(2)} °C`;
+                outputFahrenheit.innerText = `Fahrenheit: ${convertedF.toFixed(2)} °F`;
+            }
+
+            // Show the outputs
+            outputCelsius.style.display = celsiusInput.value ? 'block' : 'none';
+            outputFahrenheit.style.display = fahrenheitInput.value ? 'block' : 'none';
+            outputKelvin.style.display = kelvinInput.value ? 'block' : 'none';
+        }
+
+        function clearFields() {
+            document.getElementById('celsius').value = '';
+            document.getElementById('fahrenheit').value = '';
+            document.getElementById('kelvin').value = '';
+            document.getElementById('converter-type').value = '';
+            toggleConverter(); // Hide all circles
+            const outputs = document.querySelectorAll('.output');
+            outputs.forEach(output => output.style.display = 'none'); // Hide outputs
+        }
+    </script>
+</body>
+</html>
